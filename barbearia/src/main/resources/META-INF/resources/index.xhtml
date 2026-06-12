@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+
+	<script>
+.lateral {
+    width: 40px;
+}
+</script>
+	<title>PrimeFaces</title>
+</h:head>
+
+<h:body>
+
+
+
+	<p:splitter layout="horizontal">
+		<p:splitterPanel size="1">
+		
+
+					<h:panelGroup layout="block" style="text-align: center;width: 100%">
+						<img src="/imagem/logo.png" style="width: 420px; height: 300px">
+						</img>
+						</h:panelGroup>
+
+
+
+		</p:splitterPanel>
+		<p:splitterPanel
+			styleClass="flex align-items-center justify-content-center">
+
+			<h:panelGroup layout="block" style="text-align: center;width: 100%">
+
+				<h1>Teste</h1>
+				<h1>PrimeFaces</h1>
+			</h:panelGroup>
+
+			<div class="col-12 md:col-4" style="margin-left: 20px">
+				<div class="card">
+					<h5>Barbeiros:</h5>
+					<p:avatar icon="pi pi-user" styleClass="mr-2" size="xlarge"
+						shape="circle" />
+					<p:avatar icon="pi pi-user" styleClass="mr-2" size="xlarge"
+						style="background-color:#FFA500; color:#fff; margin-left:20px"
+						shape="circle" />
+					<p:avatar icon="pi pi-user" styleClass="mr-2" size="xlarge"
+						style="background-color:#fff; color:#000000; margin-left:20px"
+						shape="circle" id="autohide" />
+
+					<p:overlayPanel for="autohide" style="width:350px"
+						showEvent="mouseover" hideEvent="mouseout" autoHide="false">
+						<p>Nome:</p>
+						<p>Idade:</p>
+						<p>Experiência:</p>
+						<p>Avaliação média:</p>
+
+						<h5>Readonly</h5>
+						<h:form>
+							<p:rating id="ratingReadOnly" value="#{scheduleJava8View.rating}">
+								<p:ajax event="rate" listener="#{scheduleJava8View.onrate}" />
+								<p:ajax event="cancel" listener="#{scheduleJava8View.oncancel}" />
+							</p:rating>
+						</h:form>
+					</p:overlayPanel>
+				</div>
+			</div>
+
+
+			<p:card>
+				<p:divider align="center" type="dashed">
+					<b>Agendamentos</b>
+				</p:divider>
+				<h:form>
+					<p:schedule id="schedule" value="#{scheduleJava8View.eventModel}"
+						showHeader="false" height="auto" view="dayGridWeek"
+						widgetVar="myschedule">
+					</p:schedule>
+				</h:form>
+				<p:divider align="center" type="dashed">
+
+				</p:divider>
+			</p:card>
+			<p:dataTable var="produto" value="#{produtoBean.produtos}"
+				reflow="true" paginator="false">
+				<f:facet name="header">
+					<h:panelGroup layout="block" style="text-align: center;width: 100%">
+						<img src="/imagem/tesouradochat.png" style="width: 60px; height: 60px">
+						</img>
+						</h:panelGroup>
+				</f:facet>
+				<p:column headerText="Name">
+
+					<f:facet name="header">
+						<h:panelGroup layout="block"
+							style="text-align: center;width: 100%">
+							Nome
+						</h:panelGroup>
+					</f:facet>
+					<h:outputText value="#{produto.nome}" />
+				</p:column>
+
+				<p:column headerText="Preço">
+					<f:facet name="header">
+						<h:panelGroup layout="block"
+							style="text-align: center;width: 100%">
+							Preço
+						</h:panelGroup>
+					</f:facet>
+					<h:panelGroup layout="block" style="text-align: center;width: 100%">
+						<h:outputText value="$#{produto.preco}" />
+					</h:panelGroup>
+
+				</p:column>
+				
+			<f:facet name="footer">
+					<h:panelGroup layout="block" style="text-align: center;width: 100%">
+						<img src="/imagem/5estrelas.png" style="width: 160px; height: 100px">
+						</img>
+						</h:panelGroup>
+				</f:facet>
+				
+			</p:dataTable>
+			
+
+		</p:splitterPanel>
+	</p:splitter>
+
+</h:body>
+</html>
