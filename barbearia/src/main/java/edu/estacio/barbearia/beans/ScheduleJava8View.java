@@ -30,7 +30,8 @@ public class ScheduleJava8View implements Serializable {
         eventModel = new DefaultScheduleModel();
 
         DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
-                .title("Teste")
+                .title("Antônio")
+                .description("Rafael Matos")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusHours(1))
                 .build();
