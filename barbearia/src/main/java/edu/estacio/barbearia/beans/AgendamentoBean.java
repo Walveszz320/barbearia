@@ -15,6 +15,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 @Named
@@ -23,11 +24,12 @@ public class AgendamentoBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
+    @Inject
+    private SessaoBean sessaobean;
+    
     private ScheduleModel eventModel;
 
     private List<Produto> servicosSelecionados = new ArrayList<>();
-    
-    private String usuarioSelecionado;
     
     private String barbeiroSelecionado;
     
@@ -76,7 +78,7 @@ public class AgendamentoBean implements Serializable {
             return null;
         } else {
         	   DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
-                       .title(getUsuarioSelecionado())
+                       .title(sessaobean.getUsuarioLogado().getNome())
                        .description(getBarbeiroSelecionado())
                        .startDate(dataSelecionada)
                        .endDate(dataSelecionada.plusHours(1))
@@ -122,15 +124,6 @@ public class AgendamentoBean implements Serializable {
 		this.eventModel = eventModel;
 	}
 
-	public String getUsuarioSelecionado() {
-		return usuarioSelecionado;
-	}
-
-	public void setUsuarioSelecionado(String usuarioSelecionado) {
-		this.usuarioSelecionado = usuarioSelecionado;
-		System.out.println("Usuário selecionado: " + usuarioSelecionado);
-	}
-
 	public String getBarbeiroSelecionado() {
 		return barbeiroSelecionado;
 	}
@@ -138,5 +131,13 @@ public class AgendamentoBean implements Serializable {
 	public void setBarbeiroSelecionado(String barbeiroSelecionado) {
 		this.barbeiroSelecionado = barbeiroSelecionado;
 		System.out.println("Barbeiro selecionado: " + barbeiroSelecionado);
+	}
+
+	public SessaoBean getSessaobean() {
+		return sessaobean;
+	}
+
+	public void setSessaobean(SessaoBean sessaobean) {
+		this.sessaobean = sessaobean;
 	}
 }
