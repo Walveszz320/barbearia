@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+ <title>Login</title>
+</h:head>
+
+<h:body>
+<h:form>
+	<p:dialog visible="true" closable="false" header="Login"  width="400px" >
+		<p:inputText placeholder="login" style= "width: 100%" value="#{usuarioBean.login}"  >
+
+		</p:inputText>
+		<br />
+		<br />
+
+
+		<p:password placeholder="senha"  style= "width: 100%" value="#{usuarioBean.senha}"  >
+		</p:password>
+		
+		<br />
+		<br />
+		<p:messages showDetail="true" >
+		</p:messages>
+		<p:commandButton action="#{usuarioBean.efetuarlogin()}" value="Entrar" update="@form" >
+		</p:commandButton>
+
+	</p:dialog>
+	</h:form>
+</h:body>
+</html>
