@@ -1,10 +1,10 @@
 package edu.estacio.barbearia.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.estacio.barbearia.model.Usuario;
+import edu.estacio.barbearia.repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -20,6 +20,9 @@ public class UsuarioBean implements Serializable {
 	
 	@Inject
     private SessaoBean sessaoBean;
+	
+	@Inject
+	private UsuarioRepository usuarioRepository;
 
 	private String login;
 	private String senha;
@@ -28,14 +31,16 @@ public class UsuarioBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		
+		usuarios = usuarioRepository.findAll();
 
-		usuarios = new ArrayList<Usuario>();
-
-		Usuario usuario1 = new Usuario();
-		usuario1.setNome("Guilherme");
-		usuario1.setLogin("guilherme");
-		usuario1.setSenha("senha01");
-		usuarios.add(usuario1);
+//		usuarios = new ArrayList<Usuario>();
+//
+//		Usuario usuario1 = new Usuario();
+//		usuario1.setNome("Guilherme");
+//		usuario1.setLogin("guilherme");
+//		usuario1.setSenha("senha01");
+//		usuarios.add(usuario1);
 
 	}
 
@@ -95,6 +100,14 @@ public class UsuarioBean implements Serializable {
 
 	public void setSessaoBean(SessaoBean sessaoBean) {
 		this.sessaoBean = sessaoBean;
+	}
+
+	public UsuarioRepository getUsuarioRepository() {
+		return usuarioRepository;
+	}
+
+	public void setUsuarioRepository(UsuarioRepository usuarioRepository) {
+		this.usuarioRepository = usuarioRepository;
 	}
 
 }

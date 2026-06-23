@@ -10,7 +10,9 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleModel;
 
+import edu.estacio.barbearia.model.Agendamento;
 import edu.estacio.barbearia.model.Produto;
+import edu.estacio.barbearia.repository.AgendamentoRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -37,19 +39,45 @@ public class AgendamentoBean implements Serializable {
     
     private List<Date> datasValidas;
     
+    @Inject
+    private AgendamentoRepository repository;
+    
     @PostConstruct
     public void init() {
+    	
+    	servicosSelecionados = new ArrayList<>();
+    	barbeiroSelecionado = "";
+    	dataSelecionada = null;	 
+    	
 
-        eventModel = new DefaultScheduleModel();
+//        eventModel = new DefaultScheduleModel();
+//
+//        DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
+//                .title("Antônio")
+//                .description("Rafael Matos")
+//                .startDate(LocalDateTime.now())
+//                .endDate(LocalDateTime.now().plusHours(1))
+//                .build();
+//
+//        eventModel.addEvent(event);
+    	
+    	  eventModel = new DefaultScheduleModel();
 
-        DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
-                .title("Antônio")
-                .description("Rafael Matos")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusHours(1))
-                .build();
+    	    List<Agendamento> lista = repository.findAll();
 
-        eventModel.addEvent(event);
+    	    for (Agendamento ag : lista) {
+
+    	        DefaultScheduleEvent<?> event =
+    	                DefaultScheduleEvent.builder()
+    	                .title(ag.getCliente())
+    	                .description(ag.getBarbeiro())
+    	                .startDate(ag.getInicio())
+    	                .endDate(ag.getFim())
+    	                .build();
+
+    	        eventModel.addEvent(event);
+    	    }
+    	
     }
 
     public List<Produto> getServicosSelecionados() {
@@ -77,14 +105,25 @@ public class AgendamentoBean implements Serializable {
                     "Atenção", "Selecione pelo menos um serviço!"));
             return null;
         } else {
-        	   DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
-                       .title(sessaobean.getUsuarioLogado().getNome())
-                       .description(getBarbeiroSelecionado())
-                       .startDate(dataSelecionada)
-                       .endDate(dataSelecionada.plusHours(1))
-                       .build();
+//        	   DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
+//                       .title(sessaobean.getUsuarioLogado().getNome())
+//                       .description(getBarbeiroSelecionado())
+//                       .startDate(dataSelecionada)
+//                       .endDate(dataSelecionada.plusHours(1))
+//                       .build();
+//
+//               eventModel.addEvent(event);
+        	
+        	Agendamento agendamento = new Agendamento();
 
-               eventModel.addEvent(event);
+        	agendamento.setCliente(sessaobean.getUsuarioLogado().getNome());
+        	agendamento.setBarbeiro(barbeiroSelecionado);
+        	agendamento.setInicio(dataSelecionada);
+        	agendamento.setFim(dataSelecionada.plusHours(1));
+
+        	repository.save(agendamento);
+        	
+        	init();
         }
         
         return null;
@@ -139,5 +178,13 @@ public class AgendamentoBean implements Serializable {
 
 	public void setSessaobean(SessaoBean sessaobean) {
 		this.sessaobean = sessaobean;
+	}
+
+	public AgendamentoRepository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(AgendamentoRepository repository) {
+		this.repository = repository;
 	}
 }
