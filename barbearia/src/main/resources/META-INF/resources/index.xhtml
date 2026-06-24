@@ -330,7 +330,7 @@ body {
 				<div class="section-title" style="margin-top: 20px;">Escolha a
 					data e horário</div>
 				<p:schedule id="schedule" value="#{agendamentoBean.eventModel}"
-					showHeader="false" height="auto" view="dayGridWeek"
+					showHeader="false" height="auto" view="dayGridWeek" selectionMode="multiple"
 					widgetVar="myschedule" style="margin-bottom:12px;" />
 
 				<!-- SERVIÇOS -->
@@ -339,7 +339,7 @@ body {
 				<div class="services-table">
 					<p:dataTable var="produto" value="#{produtoBean.produtos}"
 						reflow="true" selection="#{agendamentoBean.servicosSelecionados}"
-						rowKey="#{produto.nome}"  selectionMode="multiple"
+						rowKey="#{produto.nome}" selectionRowMode="none" selectionPageOnly="false"
 						style="background:#1e1e1e;border-radius:10px;overflow:hidden;">
 						
 						<f:facet name="header">
@@ -349,7 +349,7 @@ body {
 							</h:panelGroup>
 						</f:facet>
 						
-						<p:column selectionBox="true" style="width:16px;text-align:center" />
+						<p:column selectionBox="true" selectRow="true" style="width:16px;text-align:center" />
 						
 						<p:column headerText="Serviço">
 							<h:outputText value="#{produto.nome}" />
@@ -369,7 +369,9 @@ body {
 							</h:panelGroup>
 						</f:facet>
 						
-						<p:ajax event="rowSelect" update="formPrincipal" />
+						<p:ajax event="toggleSelect" update="formPrincipal" />
+						<p:ajax event="rowSelectCheckbox" update="formPrincipal" />
+						<p:ajax event="rowUnselectCheckbox" update="formPrincipal" />
 					</p:dataTable>
 				</div>
 
@@ -412,7 +414,7 @@ body {
 				<!-- BOTÕES -->
 				<p:commandButton value="&#10003; Confirmar agendamento"
 					styleClass="btn-confirmar" action="#{agendamentoBean.confirmar}"
-					update="formPrincipal schedule" oncomplete="PF('msgDialog').show()" />
+					update="formPrincipal" oncomplete="PF('msgDialog').show()" />
 
 				<p:commandButton value="&#10007; Cancelar" styleClass="btn-cancelar"
 					action="#{agendamentoBean.cancelar}" update="formPrincipal"

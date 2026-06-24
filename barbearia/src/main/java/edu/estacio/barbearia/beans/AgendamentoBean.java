@@ -24,31 +24,43 @@ import jakarta.inject.Named;
 @ViewScoped
 public class AgendamentoBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    
-    @Inject
-    private SessaoBean sessaobean;
-    
-    private ScheduleModel eventModel;
+	private static final long serialVersionUID = 1L;
 
-    private List<Produto> servicosSelecionados = new ArrayList<>();
-    
-    private String barbeiroSelecionado;
-    
-    private LocalDateTime dataSelecionada;
-    
-    private List<Date> datasValidas;
-    
-    @Inject
-    private AgendamentoRepository repository;
-    
-    @PostConstruct
-    public void init() {
-    	
-    	servicosSelecionados = new ArrayList<>();
-    	barbeiroSelecionado = "";
-    	dataSelecionada = null;	 
-    	
+	@Inject
+	private SessaoBean sessaobean;
+
+	private ScheduleModel eventModel;
+
+	private List<Produto> servicosSelecionados = new ArrayList<>();
+
+	private String barbeiroSelecionado;
+
+	private LocalDateTime dataSelecionada;
+
+	private List<Date> datasValidas;
+
+	@Inject
+	private AgendamentoRepository repository;
+
+	@PostConstruct
+	public void init() {
+				
+	    FacesContext context = FacesContext.getCurrentInstance();
+
+	    if (!context.isPostback() && !sessaobean.isLogado()) {
+	        try {
+	            context.getExternalContext().redirect(
+	                context.getExternalContext().getRequestContextPath() + "/login.xhtml"
+	            );
+	            context.responseComplete();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+		servicosSelecionados = new ArrayList<>();
+		barbeiroSelecionado = "";
+		dataSelecionada = null;
 
 //        eventModel = new DefaultScheduleModel();
 //
@@ -60,51 +72,43 @@ public class AgendamentoBean implements Serializable {
 //                .build();
 //
 //        eventModel.addEvent(event);
-    	
-    	  eventModel = new DefaultScheduleModel();
 
-    	    List<Agendamento> lista = repository.findAll();
+		eventModel = new DefaultScheduleModel();
 
-    	    for (Agendamento ag : lista) {
+		List<Agendamento> lista = repository.findAll();
 
-    	        DefaultScheduleEvent<?> event =
-    	                DefaultScheduleEvent.builder()
-    	                .title(ag.getCliente())
-    	                .description(ag.getBarbeiro())
-    	                .startDate(ag.getInicio())
-    	                .endDate(ag.getFim())
-    	                .build();
+		for (Agendamento ag : lista) {
 
-    	        eventModel.addEvent(event);
-    	    }
-    	
-    }
+			DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder().title(ag.getCliente())
+					.description(ag.getBarbeiro()).startDate(ag.getInicio()).endDate(ag.getFim()).build();
 
-    public List<Produto> getServicosSelecionados() {
-        return servicosSelecionados;
-    }
+			eventModel.addEvent(event);
+		}
 
-    public void setServicosSelecionados(List<Produto> servicosSelecionados) {
-        this.servicosSelecionados = servicosSelecionados;
-    }
+	}
 
-    public double getTotal() {
-        return servicosSelecionados.stream()
-                .mapToDouble(Produto::getPreco)
-                .sum();
-    }
+	public List<Produto> getServicosSelecionados() {
+		return servicosSelecionados;
+	}
 
-    public int getQuantidadeServicos() {
-        return servicosSelecionados.size();
-    }
+	public void setServicosSelecionados(List<Produto> servicosSelecionados) {
+		this.servicosSelecionados = servicosSelecionados;
+	}
 
-    public String confirmar() {
-        if (servicosSelecionados.isEmpty()) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "Atenção", "Selecione pelo menos um serviço!"));
-            return null;
-        } else {
+	public double getTotal() {
+		return servicosSelecionados.stream().mapToDouble(Produto::getPreco).sum();
+	}
+
+	public int getQuantidadeServicos() {
+		return servicosSelecionados.size();
+	}
+
+	public String confirmar() {
+		if (servicosSelecionados.isEmpty()) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Selecione pelo menos um serviço!"));
+			return null;
+		} else {
 //        	   DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
 //                       .title(sessaobean.getUsuarioLogado().getNome())
 //                       .description(getBarbeiroSelecionado())
@@ -113,29 +117,28 @@ public class AgendamentoBean implements Serializable {
 //                       .build();
 //
 //               eventModel.addEvent(event);
-        	
-        	Agendamento agendamento = new Agendamento();
 
-        	agendamento.setCliente(sessaobean.getUsuarioLogado().getNome());
-        	agendamento.setBarbeiro(barbeiroSelecionado);
-        	agendamento.setInicio(dataSelecionada);
-        	agendamento.setFim(dataSelecionada.plusHours(1));
+			Agendamento agendamento = new Agendamento();
 
-        	repository.save(agendamento);
-        	
-        	init();
-        }
-        
-        return null;
-    }
+			agendamento.setCliente(sessaobean.getUsuarioLogado().getNome());
+			agendamento.setBarbeiro(barbeiroSelecionado);
+			agendamento.setInicio(dataSelecionada);
+			agendamento.setFim(dataSelecionada.plusHours(1));
 
-    public String cancelar() {
-        servicosSelecionados = new ArrayList<>();
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Cancelado", "Agendamento cancelado."));
-        return null;
-    }
+			repository.save(agendamento);
+
+			init();
+		}
+
+		return null;
+	}
+
+	public String cancelar() {
+		servicosSelecionados = new ArrayList<>();
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Cancelado", "Agendamento cancelado."));
+		return null;
+	}
 
 	public LocalDateTime getDataSelecionada() {
 		return dataSelecionada;
